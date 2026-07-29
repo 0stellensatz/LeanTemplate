@@ -14,6 +14,8 @@ Everything down to the divider is about the template. `__rename__.py` cuts it in
 	gh repo create <Owner>/<Project> --template 0stellensatz/LeanTemplate --private --clone
 	```
 
+	A parent repository that tracks its projects as submodules drops `--clone` and runs `git submodule add` on the new repository instead, so that the submodule checkout is the only working clone. Either way, **the checkout directory has to carry the package name**—`__check__.py` reads the project name off it.
+
 2. **Rename the package.** A GitHub template copies files verbatim and substitutes nothing, so the package, the library directory, and the root all-import module are all still called `LeanTemplate`. One script does the whole rename and then deletes itself:
 
 	```bash
