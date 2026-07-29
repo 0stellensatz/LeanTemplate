@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: ["master", "main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer run on the same ref supersedes an in-flight one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs the toolchain named in `lean-toolchain`, fetches the Mathlib
+      # cache, and runs `lake build` — which builds everything reachable from the
+      # root all-import module.
+      - uses: leanprover/lean-action@v1
+
+      # `Challenge.lean` and `CompareMathlib.lean` declare the same names in the
+      # same namespace as the `Development.lean` beside them, so they cannot
+      # enter one environment and the root module does not import them. They are
+      # built by name instead. A project that has none of them builds nothing
+      # here, and the step passes.
+      - name: Build the comparator files
+        run: |
+          set -euo pipefail
+          find . -path ./.lake -prune -o \
+            \( -name Challenge.lean -o -name CompareMathlib.lean \) -print |
+          while read -r file; do
+            module="${file#./}"
+            module="${module%.lean}"
+            lake build "${module//\//.}"
+          done
+
+      # Catches what a build does not report as an error: a module missing from
+      # the root module's import list, a module that reaches two of a unit's
+      # three comparator files, and a comparator file that has drifted from the
+      # Development it is supposed to match declaration-for-declaration.
+      - name: Structural check
+        run: python3 __check__.py
