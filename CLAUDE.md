@@ -10,20 +10,20 @@ This file provides guidance to coding agents—Claude Code (claude.ai/code) and 
 
 ## Architecture
 
-This is a standalone Lake package. *Which of the architecture documents it follows*—`@./__docs__/rules-formalization-project.md` for the `Defs.lean` / auxiliary-file architecture, `@./__docs__/rules-comparator.md` for the Challenge / Development pair—and then the project-specific parameters those documents leave open:
+This is a standalone Lake package. *Whether it follows `@./__docs__/rules-formalization-project.md`*—the `Defs.lean` / auxiliary-file architecture, unit by unit—and if so, the project-specific parameters that document leaves open:
 
 - **The unit granularity**: whether a unit is the project root itself, a chapter directory `CNN/`, or a section directory `SNN/`—and so what the module names and the build target look like.
-- **The root namespace**, and the comparator namespace beside it. Whether the project declares one flat namespace or a sub-namespace per file.
-- **Where the definitional layer lives**: `Defs.lean` is the *production* copy, imported by the auxiliary files and by `Development.lean`, never by `Challenge.lean`. Say how expensive bridging from a clone is here—cheap when the layer is all `def`s, less so when it holds a `structure`.
-- **Whether the project keeps a `CompareMathlib.lean`**, and if not, why there is no contrast to draw.
+- **The root namespace**, and whether the project declares one flat namespace or a sub-namespace per file.
+- **Where the definitional layer lives**: `Defs.lean` per unit, one shared file, or nothing so heavy that it wants a file of its own.
+- **Whether the project keeps a per-unit summary module** restating that unit's results in the source's order, and what it is called.
 - **Whether Mathlib may be used without restriction**, or whether the project draws a preliminary boundary that later units must respect.
 - **Any standing exemption**—an unused-variable warning kept on purpose, an unscoped `maxHeartbeats`—with the reasoning recorded in the `__docs__/` copy that governs it, not here.
 
-Every source file must be reachable from the root all-import module `LeanTemplate.lean`; adding a `.lean` file means adding its `import` line there in the same edit. `Challenge.lean` and `CompareMathlib.lean` are the exceptions—they share `Development.lean`'s namespace and are built by name.
+Every source file must be reachable from the root all-import module `LeanTemplate.lean`; adding a `.lean` file means adding its `import` line there in the same edit. There are no exceptions, and `__check__.py` is what enforces it.
 
 ## Which rules this project carries
 
-*Which documents survived the prune, and what was changed in them.* The template ships four in `__docs__/`—`rules-comments.md`, `rules-documentation.md`, `rules-formalization-project.md`, `rules-comparator.md`—plus the structural checker `__check__.py`. A project that does not follow a rule deletes the document that states it; a project whose situation differs from the generic wording edits its own copy rather than having the wording carve out an exception.
+*Which documents survived the prune, and what was changed in them.* The template ships three in `__docs__/`—`rules-comments.md`, `rules-documentation.md`, `rules-formalization-project.md`—plus the structural checker `__check__.py`. A project that does not follow a rule deletes the document that states it; a project whose situation differs from the generic wording edits its own copy rather than having the wording carve out an exception.
 
 The one edit almost every project makes: `rules-comments.md` closes with a *When the target is Mathlib* section, which a project not aimed at upstreaming cuts, noting the cut in one line at the top of its copy.
 

@@ -2,7 +2,9 @@
 
 A GitHub template repository for a Lean 4 + Mathlib formalization project: the package `lake new <Project> math` produces, with a set of writing conventions and a structural checker already in position, and its Mathlib pin resolved so that `lake exe cache get` works on the first clone.
 
-It is the seed for the Lean projects of a private notes repository, where each project derived from it is cloned back in as a git submodule. Nothing here is specific to that repository except a handful of paths in the conventions, noted at the end.
+It imposes no workflow beyond how a file is laid out and how it is documented. A person states a result and proves it in the file that states it; nothing is frozen, and nothing has to be kept in step with anything else. A project that instead wants the Challenge / Development comparator pair—a benchmark file stating every target against Mathlib alone and proving none of them, matched declaration-for-declaration by a file that proves them all—is an auto-formalization project and starts from the sibling template https://github.com/0stellensatz/AutoFormalization, which is this one plus that discipline, its conventions, and the checks that enforce it.
+
+Both are the seed for the Lean projects of a private notes repository, where each project derived from either is cloned back in as a git submodule. Nothing here is specific to that repository except a handful of paths in the conventions, noted at the end.
 
 ## Deriving a project from it
 
@@ -26,7 +28,7 @@ Everything down to the divider is about the template. `__rename__.py` cuts it in
 
 3. **Fill in `lakefile.toml`**—`description`, `keywords`, and `homepage`, which ship as placeholders. `[leanOptions]`, the Mathlib requirement, and its `rev` are already what a derived project wants; leave them alone unless the whole tree is moving to a new Mathlib.
 
-4. **Prune `__docs__/` to the rules that actually apply**, and record in `CLAUDE.md` which ones remain. The template carries all four because a template cannot select; a project that does not follow a rule does not carry the document that states it. See *What ships* below.
+4. **Prune `__docs__/` to the rules that actually apply**, and record in `CLAUDE.md` which ones remain. The template carries three because a template cannot select; a project that does not follow a rule does not carry the document that states it. See *What ships* below.
 
 5. **Write `README.md` and `CLAUDE.md`.** Both ship as skeletons with their placeholders marked. `AGENTS.md` is already a symlink to `CLAUDE.md`.
 
@@ -41,14 +43,13 @@ Everything down to the divider is about the template. `__rename__.py` cuts it in
 ## What ships
 
 - **`lakefile.toml`, `lean-toolchain`, `lake-manifest.json`, `.gitignore`**—what `lake new <Project> math` emits, on the toolchain named in `lean-toolchain` and with the Mathlib revision the manifest pins. The manifest is committed, which is what lets the first `lake exe cache get` land on prebuilt oleans instead of resolving the tag afresh and drifting off the revision the sibling projects are on.
-- **`LeanTemplate.lean`**—the root all-import module, empty. Every source file added under `LeanTemplate/` gets its `import` line here in the same edit, or a plain `lake build` silently skips it. The exceptions are `Challenge.lean` and `CompareMathlib.lean`, which share `Development.lean`'s namespace and are built by name. The library directory beside it holds nothing but a `.gitkeep`, since git does not track an empty directory and `__check__.py` wants the directory to exist; delete it once there is a real source file.
-- **`__check__.py`**—the structural checker. It is textual and needs no build, and it catches the mistakes a build does not report as errors: a file missing from the root module, a module that reaches two of a unit's three comparator files, and a comparator file that has drifted from its Challenge. For a project with no `Challenge.lean` only the root-import check applies.
-- **`__docs__/`**—four convention documents, of which a project keeps only those it follows:
+- **`LeanTemplate.lean`**—the root all-import module, empty. Every source file added under `LeanTemplate/` gets its `import` line here in the same edit, or a plain `lake build` silently skips it. The library directory beside it holds nothing but a `.gitkeep`, since git does not track an empty directory and `__check__.py` wants the directory to exist; delete it once there is a real source file.
+- **`__check__.py`**—the structural checker: the root module imports every source file of the project, and imports nothing that has no source file. It is textual and needs no build. One check is all it takes, because there is exactly one structural mistake here that a build does not report—a file left out of the import list, which is then not built, not type-checked, and green.
+- **`__docs__/`**—three convention documents, of which a project keeps only those it follows:
 	- `rules-comments.md`—how the prose inside a comment is written. Applies to every project. Its closing *When the target is Mathlib* section is the conditional part: a project not aimed at upstreaming cuts it and says so in one line at the top, so the copy states only rules that are in force.
 	- `rules-documentation.md`—module and declaration docstrings, and citations. Applies to every project; the citation section is worth narrowing per project.
-	- `rules-formalization-project.md`—the `Defs.lean` / auxiliary-file architecture. Only for a project that formalizes a source unit by unit.
-	- `rules-comparator.md`—the Challenge / Development pair. Only for a project that uses it; a project of exercise files or dated logs drops it.
-- **`.github/workflows/build.yml`**—fetches the Mathlib cache, builds, builds any comparator files by name, and runs `__check__.py`. The three workflows `lake new` ships are deliberately not here: two of them publish releases and documentation, and the third opens automatic Mathlib-bump pull requests, which would break a tree that pins one Mathlib revision across every project.
+	- `rules-formalization-project.md`—the `Defs.lean` / auxiliary-file architecture. Only for a project that formalizes a source unit by unit; a project of exercise files or dated logs drops it.
+- **`.github/workflows/build.yml`**—fetches the Mathlib cache, builds, and runs `__check__.py`. The three workflows `lake new` ships are deliberately not here: two of them publish releases and documentation, and the third opens automatic Mathlib-bump pull requests, which would break a tree that pins one Mathlib revision across every project.
 - **`LICENSE`**—Apache-2.0, matching the Lean and Mathlib ecosystem. Replace it, or delete it, if the derived project wants something else.
 
 Once derived, these are the project's own. They are fine-tuned in place as the project's reality demands, and an exception belongs in the project's copy, never back in the template. An edit to the template changes what the *next* project starts from; it does not reach the projects already derived, and propagating it into them is a deliberate, project-by-project act—a copy that has been fine-tuned is never overwritten wholesale.

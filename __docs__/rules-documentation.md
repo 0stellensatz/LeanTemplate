@@ -80,7 +80,7 @@ Sections that do not apply are omitted rather than left empty. In a source-forma
 	```
 
 - A statement whose *source of truth* is a reading note of this repository rather than the paper itself says so, with the repo-root-relative path: `notes/math/theme/Pagano2022.tex`. The paper is what is cited; the note is what was read.
-- **Mathlib is cited by declaration name**, never by bibliography key: name the lemma in backticks (`Ideal.exists_maximal`). This is what makes a `CompareMathlib.lean` body self-documenting.
+- **Mathlib is cited by declaration name**, never by bibliography key: name the lemma in backticks (`Ideal.exists_maximal`). A proof that is really Mathlib's says so this way, and becomes self-documenting.
 
 ## What documentation is *not* for
 
