@@ -12,11 +12,12 @@ Run it from the project root, or wire it into a hook or a CI step:
 One check, textual (no build, no Lean required):
 
     Root imports --- the root module `<Project>/<Project>.lean` must directly
-    import every module of the project, and import nothing that has no source
-    file.  This is checked rather than left to the build because the failure is
-    silent: a file missing from the import list is not built, is not
-    type-checked, and reports nothing at all.  A `lake build` of a project with a
-    dropped file is as green as one without.
+    import every module of the project, and import no `<Project>.*` module that
+    has no source file.  (Its `import Mathlib` is left alone; every file of the
+    project carries one.)  This is checked rather than left to the build because
+    the failure is silent: a file missing from the import list is not built, is
+    not type-checked, and reports nothing at all.  A `lake build` of a project
+    with a dropped file is as green as one without.
 
 Exit status is 0 when the project is clean, 1 otherwise.
 """

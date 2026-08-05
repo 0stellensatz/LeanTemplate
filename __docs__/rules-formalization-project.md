@@ -60,7 +60,7 @@ Lean's import graph is acyclic, and a unit's shape follows from that: the defini
 - Declarations live in the project's root namespace; source-level objects get nested namespaces for dot notation.
 - Each file wraps its contents in a sub-namespace named after it (`namespace <Root>.RhoEP` inside `RhoEP.lean`); helpers not meant for use outside the file are `private`. The file's concluding declaration is the one other files reach for, so it is the one whose name is worth arguing about.
 - Docstrings on source-facing declarations cite the source's numbering and page—see `./rules-documentation.md`.
-- Modeling decisions (how a source object is encoded—e.g. `ℤ_{≥1}` as `ℕ+`) are recorded once, in the `## Implementation notes` of the file that introduces the definition they concern, and stay consistent across units.
+- Modeling decisions (how a source object is encoded—e.g., `ℤ_{≥1}` as `ℕ+`) are recorded once, in the `## Implementation notes` of the file that introduces the definition they concern, and stay consistent across units.
 - When a declaration's natural name collides with the Mathlib lemma it mirrors, the Mathlib one is reachable as `_root_.<name>`; prefer a distinct descriptive name when the collision would confuse.
 
 ## File layout
