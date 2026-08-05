@@ -6,9 +6,9 @@ How the prose *inside* a comment is written: line breaking, how mathematics is s
 
 ## Hard wrap at 100 columns
 
-Every line of a comment is hard-wrapped to at most 100 columns, breaking mid-sentence wherever the wrap falls. Comment prose is broken by *width*—neither per sentence nor per paragraph. (This is a rule about Lean comments only; the parent repository's per-paragraph Markdown convention still governs `.md` files.)
+Every line of a comment is hard-wrapped to at most 100 columns, breaking mid-sentence wherever the wrap falls. Comment prose is broken by *width*—neither per sentence nor per paragraph. (This is a rule about Lean comments only, and says nothing about how the project's `.md` files are broken.)
 
-**A new sentence does not start a new line.** The wrap is the only thing that ends a line: a sentence ending mid-line is followed by the next one on that same line, and a line that stops short of the limit *because* a sentence ended there is the mistake this rule exists to prevent. It is the `.tex` habit—LaTeX in this repository is broken per sentence (`__docs__/rules-latex.md`, repo-root-relative)—leaking into a Lean comment, where it does not apply.
+**A new sentence does not start a new line.** The wrap is the only thing that ends a line: a sentence ending mid-line is followed by the next one on that same line, and a line that stops short of the limit *because* a sentence ended there is the mistake this rule exists to prevent. It is the `.tex` habit—LaTeX source is conventionally broken per sentence—leaking into a Lean comment, where it does not apply.
 
 Broken at the sentence, which is wrong:
 
@@ -30,7 +30,7 @@ paper. Jump sets are defined in terms of *shifts*.
 - `gfmt -w100` does the mechanical work, but **read its output before keeping it.** It reflows every construct named below as though it were prose—fenced blocks, code spans, `$ ... $` math, emphasis, links—so a displayed proof state or a Lean expression can come back broken, and a `*term*` or a `[text](url)` can come back split across two lines. Repair those by hand. Two of its defaults need undoing as well: it fills to a *goal* width of 93% of `-w`, so lines land near 93 columns unless `-g100` is passed alongside `-w100`, and it puts two spaces after a sentence-ending period whenever it joins two lines.
 - **Never break between a construct's delimiters**—an inline code span, emphasis (`*...*`, `**...**`), a link in any of its forms (`[text](url)`, `[text][key]`, `<url>`), or a `$ ... $` formula. Both delimiters have to meet on one line for an editor to mark the span between them, so a break costs exactly the marking the construct was written for. Wrap before the opening delimiter or after the closing one, and let a line that cannot fit within 100 columns any other way stay over-long. The *contents* of a code span or of a fenced block are not reflowed at all, for the further reason that they are Lean: refilling them changes what they say.
 - **A citation is one of those links**, and is kept whole for that reason: write `([Atiyah–MacDonald 1969, Prop. 1.1, p.2][AtiyahMacDonald1969])` on one line, moving the whole citation down to the next line when it does not fit, rather than wrapping between the author and the year or between the pinpoint and the key. A line that ends short to keep one intact is not the sentence-break mistake above—it is the exception the rule above grants.
-- Nothing suppresses the check any more. The file-level `set_option` block is empty (`./rules-formalization-project.md`), so `linter.style.longLine` fires on a line that is genuinely too long, and that warning is the signal to rewrap.
+- Nothing suppresses the check. The file-level `set_option` block is empty (`./rules-formalization-project.md`), so `linter.style.longLine` fires on a line that is genuinely too long, and that warning is the signal to rewrap.
 - A continuation line of a Markdown construct—the second line of a bullet, of a numbered item, or of a `## References` entry—is indented **two spaces**, as Markdown requires for the continuation to belong to the item.
 
 ## Mathematics is carried by Lean, not by LaTeX
@@ -52,12 +52,12 @@ The code-span rule this rests on is unchanged: **what sits inside `` `...` `` mu
 
 4. **Nothing above works—`$ ... $` (or `$$ ... $$`) as a fallback**, not as a default. Reach for it when the content is genuinely a displayed formula that neither Lean notation nor English can carry.
 
-When rung 4 is used, the LaTeX inside it **inherits the parent repository's global editing conventions**, not a Lean-specific set:
+When rung 4 is used, the LaTeX inside it follows these conventions:
 
-- Symbol preferences follow the repository-root `__docs__/rules-math-symbols.md`—`\smallsetminus` over `\setminus`, `\subseteq` for inclusion (`\subset` reserved for strict), `\mathfrak{m}` / `\mathfrak{p}`, `\cong` over `\simeq`, `\emptyset`, and the rest.
-- In-math spacing and layout follow the repository-root `__docs__/rules-latex.md`—function application is spaced before its argument (`v_L (\mathfrak{d})`, not `v_L(\mathfrak{d})`), and binary operators and relations are spaced on both sides (`L / K`, not `L/K`).
-- **No preamble, so no template macros.** A comment has no preamble, so the repo's custom macros (the set-symbol shorthands `\ZZ`, `\QQ`, …, the `\Set{...}{...}` builder, `\powerseries`, and friends) are undefined. Use the plain LaTeX each stands for—`\mathbb{Z}`, not `\ZZ`; a written-out `\{ ... \mid ... \}`, not `\Set`—while keeping the macro-independent symbol *preferences* above.
-- **Prose-level `.tex` conventions are overridden** (see *Markdown conventions* below): straight ASCII quotes rather than `` ``...'' ``, and the literal Unicode em dash `—` rather than `---` / `--`.
+- **Symbol preferences:** `\smallsetminus` over `\setminus`, `\subseteq` for inclusion (`\subset` reserved for strict), `\mathfrak{m}` / `\mathfrak{p}` for a maximal / prime ideal, `\cong` over `\simeq`, `\emptyset` over `\varnothing`.
+- **In-math spacing:** function application is spaced before its argument (`v_L (\mathfrak{d})`, not `v_L(\mathfrak{d})`), and binary operators and relations are spaced on both sides (`L / K`, not `L/K`).
+- **No preamble, so no macros.** A comment has no preamble, so a custom macro is undefined and there is nowhere to declare one. Write out the plain LaTeX it would have stood for—`\mathbb{Z}` rather than a `\ZZ` shorthand, `\{ ... \mid ... \}` rather than a set-builder macro—while keeping the symbol *preferences* above.
+- **Prose-level `.tex` habits do not carry over** (see *Markdown conventions* below): straight ASCII quotes rather than `` ``...'' ``, and the literal Unicode em dash `—` rather than `---` / `--`.
 
 ## Markdown conventions inside comment blocks
 
@@ -79,7 +79,7 @@ When rung 4 is used, the LaTeX inside it **inherits the parent repository's glob
 A file headed upstream keeps everything above—the 100-column wrap and the Markdown rules are Mathlib's own—and adds only this, following the official [Mathlib style guide](https://leanprover-community.github.io/contribute/style.html) and [documentation guidelines](https://leanprover-community.github.io/contribute/doc.html):
 
 - **A copyright header** opens the file, ahead of the imports.
-- **Cite keys resolve against Mathlib's `docs/references.bib`**, not this repo's `bib/__main__.bib`. The bracketed syntax of `./rules-documentation.md` is unchanged, so upstreaming a file means moving its entries into that database, nothing more.
+- **Cite keys resolve against Mathlib's `docs/references.bib`**, not the project's own bibliography. The bracketed syntax of `./rules-documentation.md` is unchanged, so upstreaming a file means moving its entries into that database, nothing more.
 - **`## Tags` is expected** in the module docstring rather than optional.
 - **The full Mathlib linter set must pass**, with no file-level suppression—which is the rule here in any case. One consequence for the wrap rule above: the licence to leave a line over-long rather than break a construct is not available upstream, since `linter.style.longLine` has to pass and cannot be turned off. Reword the sentence so that the unbreakable construct starts a line of its own.
 - **MathJax renders full LaTeX environments** (`align`, `cases`, …) on the documentation site, so the rung-4 fallback has more room upstream than it does in the editor. It is still a fallback.

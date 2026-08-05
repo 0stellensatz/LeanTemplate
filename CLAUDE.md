@@ -6,15 +6,15 @@ This file provides guidance to coding agents—Claude Code (claude.ai/code) and 
 
 ## Project
 
-*What the project formalizes.* If it is bound to a source, name the work and its cite key in `bib/__main__.bib` (repo-root-relative); if it is bound to a theorem rather than to a paper, state the theorem and say that the exposition is not being followed step by step. Name the source of truth for statements—a reading note under `notes/math/theme/`, the cached PDF, or both—and the form a page or theorem citation takes.
+*What the project formalizes.* If it is bound to a source, name the work and its cite key, and **name the bibliography that key lives in**—`@./__docs__/rules-documentation.md` cites against whatever this section says, and says so nowhere else. If the project is bound to a theorem rather than to a paper, state the theorem and say that the exposition is not being followed step by step. Name the source of truth for statements—the paper, a reading note taken from it, or both—and the form a page or theorem citation takes.
 
 ## Architecture
 
-This is a standalone Lake package. *Whether it follows `@./__docs__/rules-formalization-project.md`*—the `Defs.lean` / auxiliary-file architecture, unit by unit—and if so, the project-specific parameters that document leaves open:
+This is a standalone Lake package. *Whether it follows `@./__docs__/rules-formalization-project.md`*—the per-unit architecture for working through a source—and if so, the project-specific parameters that document leaves open:
 
-- **The unit granularity**: whether a unit is the project root itself, a chapter directory `CNN/`, or a section directory `SNN/`—and so what the module names and the build target look like.
+- **The unit granularity**: what slice of the source a unit is, and how it is spelled on disk—a directory of its own, a flat run of files at the library root, a single file—and so what the module names and the build target look like.
 - **The root namespace**, and whether the project declares one flat namespace or a sub-namespace per file.
-- **Where the definitional layer lives**: `Defs.lean` per unit, one shared file, or nothing so heavy that it wants a file of its own.
+- **Where the definitions live**: a `Defs.lean` per unit, one shared file, or nothing heavy enough to want a file of its own.
 - **Whether the project keeps a per-unit summary module** restating that unit's results in the source's order, and what it is called.
 - **Whether Mathlib may be used without restriction**, or whether the project draws a preliminary boundary that later units must respect.
 - **Any standing exemption**—an unused-variable warning kept on purpose, an unscoped `maxHeartbeats`—with the reasoning recorded in the `__docs__/` copy that governs it, not here.

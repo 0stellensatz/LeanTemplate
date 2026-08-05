@@ -4,8 +4,6 @@ A GitHub template repository for a Lean 4 + Mathlib formalization project: the p
 
 It imposes no workflow beyond how a file is laid out and how it is documented. A person states a result and proves it in the file that states it; nothing is frozen, and nothing has to be kept in step with anything else. A project that instead wants the Challenge / Development comparator pair—a benchmark file stating every target against Mathlib alone and proving none of them, matched declaration-for-declaration by a file that proves them all—is an auto-formalization project and starts from the sibling template https://github.com/0stellensatz/AutoFormalization, which is this one plus that discipline, its conventions, and the checks that enforce it.
 
-Both are the seed for the Lean projects of a private notes repository, where each project derived from either is cloned back in as a git submodule. Nothing here is specific to that repository except a handful of paths in the conventions, noted at the end.
-
 ## Deriving a project from it
 
 Everything down to the divider is about the template. `__rename__.py` cuts it in step 2, leaving the project's own README behind.
@@ -48,15 +46,11 @@ Everything down to the divider is about the template. `__rename__.py` cuts it in
 - **`__docs__/`**—three convention documents, of which a project keeps only those it follows:
 	- `rules-comments.md`—how the prose inside a comment is written. Applies to every project. Its closing *When the target is Mathlib* section is the conditional part: a project not aimed at upstreaming cuts it and says so in one line at the top, so the copy states only rules that are in force.
 	- `rules-documentation.md`—module and declaration docstrings, and citations. Applies to every project; the citation section is worth narrowing per project.
-	- `rules-formalization-project.md`—the `Defs.lean` / auxiliary-file architecture. Only for a project that formalizes a source unit by unit; a project of exercise files or dated logs drops it.
+	- `rules-formalization-project.md`—how a unit is laid out and worked through. Only for a project that formalizes a source unit by unit; a project of exercise files or dated logs drops it. It fixes no directory scheme and no filenames beyond naming `Defs.lean` as a convention.
 - **`.github/workflows/build.yml`**—fetches the Mathlib cache, builds, and runs `__check__.py`. The three workflows `lake new` ships are deliberately not here: two of them publish releases and documentation, and the third opens automatic Mathlib-bump pull requests, which would break a tree that pins one Mathlib revision across every project.
 - **`LICENSE`**—Apache-2.0, matching the Lean and Mathlib ecosystem. Replace it, or delete it, if the derived project wants something else.
 
 Once derived, these are the project's own. They are fine-tuned in place as the project's reality demands, and an exception belongs in the project's copy, never back in the template. An edit to the template changes what the *next* project starts from; it does not reach the projects already derived, and propagating it into them is a deliberate, project-by-project act—a copy that has been fine-tuned is never overwritten wholesale.
-
-## Paths that point outside
-
-The conventions were written inside a private notes repository and refer to a few of its paths: `bib/__main__.bib` (the bibliography that docstring cite keys resolve against), `notes/math/theme/` (the reading notes behind a formalization), and `notes/code-lean4/` (where the derived projects are checked out). They do not resolve in a standalone clone. They are left in place because they record where a convention or a statement comes from, which is worth more than a path that resolves; a project used outside that repository repoints them in its own copies.
 
 ---
 
